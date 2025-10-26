@@ -15,7 +15,6 @@ print(df.T)
 # Get table with matches 
 query = f"""select * from warehouse.main.matches order by 1"""
 df_matches = con.execute(query).fetchdf()
-df_matches = df_matches[(df_matches.kickoff_ts >= '2025-08-01') & (df_matches.kickoff_ts <= '2025-11-01')]
 list_matches_ts = df_matches.sort_values('kickoff_ts').kickoff_ts.unique()
 print(df_matches.T)
 
@@ -23,6 +22,12 @@ print(df_matches.T)
 query = f"""select * from warehouse.main.odds order by 1"""
 df_odds = con.execute(query).fetchdf()
 print(df_odds.T) # decent
-
-
 con.close()
+
+def get_table(table_name):
+    query = f"""select * from {table_name} order by 1"""
+    df_matches = con.execute(query).fetchdf()
+    return df_matches
+
+get_table('warehouse.main.fact_standings_snapshot').describe()
+

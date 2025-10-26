@@ -5,6 +5,9 @@ Thus:
 - quotes: The Odds API (first approach: we want to keep it free. we will only grab quotes 24h before kick off. ~306 games per season, The Odds limit is 500 requests / month)
     can also use Sportsbook API (50/day), OddsAPI.io (500/month) or API-Football (100/day)
 
+We need to get injured players, player stats, team stats (can be inferred from player stats if no transfer during the season). After looking around, I decided to go with the $19 monthly subscription with api-football, to get good data coverage - the end goal being to train a model, I need a solid dataset.
+In order to get more familiar with the datastructure, I built a script explore_data_pipeline.py, that realizes calls to build in-house SQL-like datasets.
+
 # set up the environment:
 
 in powershell (dl python 3.11.9 if needed):
@@ -27,12 +30,16 @@ finally run
     python run_ingest.py
 
 # Data
-I use duckdb. I can't export it in here - not sure why, still investigating. run_ingest.py does create the tables
+I use duckdb. I can't export it in here - not sure why, still investigating. run_ingest.py does create the database.
+You will need an API key for: 
+- TheOdds (free, limited feed)
+
 
 # Done
 
-# In Progress
-- gathering and processing data 
+# In Progress: gathering and processing data: 
+- improve coverage for warehouse.main.fact_standings_snapshot (currently one per season and team)
+- improve coverage for odds (looks like it is empty on API-football - might need to revert back to TheOdds)
 
 # To do 
 - betting engine
