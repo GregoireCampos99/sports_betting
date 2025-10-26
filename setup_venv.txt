@@ -1,0 +1,24 @@
+in powershell (dl python 3.11.9 if needed):
+
+    py -3.11 -m venv .venv
+
+then:
+
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+    .\.venv\Scripts\Activate.ps1
+
+then check:
+
+    python -c "import ssl; print(ssl.OPENSSL_VERSION)"
+
+it should return something like: "OpenSSL 3.0.13 30 Jan 2024"
+
+
+you might need to install the dependencies
+
+    pip install httpx pandas duckdb python-dotenv pyarrow
+
+
+finally run 
+
+    python run_ingest.py
