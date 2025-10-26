@@ -24,7 +24,7 @@ std       41.567020      0.643425    289.456830  122944.716243        NaN       
 
 >>> missing odds for now - might go back to using TheOdds
 
->>> pb on fact_standings_snapshots: one observation per team and per season. 
+>>> pb on fact_standings_snapshots: one observation per team and per season. we can rebuild it using fixtures.
 
 >>> get_table('warehouse.main.fact_player_stats_match').describe().T
                       count                        mean                         min  ...                         75%                         max            std

@@ -187,6 +187,13 @@ def upsert(con, table, df, keys):
     con.unregister("df_src")
     return len(df)
 
+def parse_matchday(round_txt: str) -> int | None:
+    if not round_txt:
+        return None
+    parts = round_txt.split("-")
+    tail = parts[-1].strip()
+    return int(tail) if tail.isdigit() else None
+
 def ingest_dim_league(con):
     resp = api_get("leagues", {})   # can filter by country later
     rows = []
@@ -308,36 +315,6 @@ def ingest_player_stats(con, league_id:int, season:int):
         total += upsert(con, "fact_player_stats", df, ["league_id","season","player_id","team_id","fixture_id"])
         page += 1
     return total
-
-def ingest_standings_snapshot(con, league_id:int, season:int):
-    resp = api_get("standings", {"league": league_id, "season": season})
-    rows=[]
-    now = pd.Timestamp.utcnow()
-    for item in resp:
-        league = item.get("league",{}) or {}
-        for table in league.get("standings", []):
-            for t in table:
-                team = t.get("team",{}) or {}
-                rows.append({
-                    "league_id": league_id,
-                    "season": season,
-                    "matchday": t.get("rank"),  # alt: parse from league['round']; adapt if needed
-                    "team_id": team.get("id"),
-                    "rank": t.get("rank"),
-                    "points": t.get("points"),
-                    "played": (t.get("all") or {}).get("played"),
-                    "wins": (t.get("all") or {}).get("win"),
-                    "draws": (t.get("all") or {}).get("draw"),
-                    "losses": (t.get("all") or {}).get("lose"),
-                    "gf": ((t.get("all") or {}).get("goals") or {}).get("for"),
-                    "ga": ((t.get("all") or {}).get("goals") or {}).get("against"),
-                    "gd": t.get("goalsDiff"),
-                    "form": t.get("form"),
-                    "snapshot_ts": now
-                })
-    df = pd.DataFrame(rows)
-    return upsert(con, "fact_standings_snapshot",
-                  df, ["league_id","season","matchday","team_id"])
 
 def ingest_injuries(con, league_id:int, season:int):
     resp = api_get("injuries", {"league": league_id, "season": season})
@@ -494,15 +471,15 @@ def run_full_ingest(leagues: dict[str,int], seasons: list[int]):
     for country, league_id in leagues.items():
         for season in seasons:
             print(f"== {country} {season} ==")
-            # dimensions
-            ingest_dim_team(con, league_id, season)
-            ingest_dim_player(con, league_id, season)
-            # facts
-            ingest_fixtures(con, league_id, season)
-            # ingest_player_stats(con, league_id, season)
-            ingest_fixtures(con, league_id, season)  # make sure fixtures exist first
-            ingest_player_stats_per_fixture(con, league_id, season, only_finished=True)
-            ingest_standings_snapshot(con, league_id, season)
+            # # dimensions
+            # ingest_dim_team(con, league_id, season)
+            # ingest_dim_player(con, league_id, season)
+            # # facts
+            # ingest_fixtures(con, league_id, season)
+            # # ingest_player_stats(con, league_id, season)
+            # ingest_fixtures(con, league_id, season)  # make sure fixtures exist first
+            # ingest_player_stats_per_fixture(con, league_id, season, only_finished=True)
+            # ingest_standings_snapshot(con, league_id, season)
             try:
                 ingest_injuries(con, league_id, season)
             except RuntimeError as e:
@@ -513,7 +490,8 @@ def run_full_ingest(leagues: dict[str,int], seasons: list[int]):
                 SELECT fixture_id FROM fact_fixtures
                 WHERE league_id=? AND season=? AND date_utc IS NOT NULL
             """, [league_id, season]).fetchdf()["fixture_id"].tolist()
-            ingest_odds_by_season(con, league_id, season) 
+            ingest_standings_by_round(con, league_id, season)
+            # ingest_odds_by_season(con, league_id, season) 
 
     con.close()
 

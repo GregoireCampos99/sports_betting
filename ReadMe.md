@@ -38,7 +38,6 @@ You will need an API key for:
 # Done
 
 # In Progress: gathering and processing data: 
-- improve coverage for warehouse.main.fact_standings_snapshot (currently one per season and team)
 - improve coverage for odds (looks like it is empty on API-football - might need to revert back to TheOdds)
 
 # To do 

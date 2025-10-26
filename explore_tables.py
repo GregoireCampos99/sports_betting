@@ -2,7 +2,7 @@
 import duckdb, pandas as pd
 
 db_path = r"C:/Users/campo/Desktop/sports betting/warehouse.duckdb"
-con = duckdb.connect(db_path, read_only=False)  # set True if you only read
+con = duckdb.connect(db_path, read_only=False) 
 
 # Quick sanity check
 print(con.execute("select version(), current_database()").fetchdf())
@@ -10,7 +10,7 @@ print(con.execute("select version(), current_database()").fetchdf())
 # Get all tables
 query = f"""select * from information_schema.tables"""
 df = con.execute(query).fetchdf()
-print(df.T)
+print(df)
 
 # Get table with matches 
 query = f"""select * from warehouse.main.matches order by 1"""
@@ -29,5 +29,5 @@ def get_table(table_name):
     df_matches = con.execute(query).fetchdf()
     return df_matches
 
-get_table('warehouse.main.fact_standings_snapshot').describe()
+get_table('warehouse.main.fact_odds').describe()
 
