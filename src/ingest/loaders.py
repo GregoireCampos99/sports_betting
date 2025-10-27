@@ -16,17 +16,6 @@ NUMERIC_COLS = ["price_home", "price_draw", "price_away"]
 INT_COLS = ["season"]
 TS_COLS = ["last_update", "commence_time"]
 
-def _coerce_odds_dtypes(df):
-    if df is None or df.empty: return df
-    import pandas as pd
-    for c in TS_COLS:
-        if c in df.columns: df[c] = pd.to_datetime(df[c], utc=True, errors="coerce")
-    for c in NUMERIC_COLS:
-        if c in df.columns: df[c] = pd.to_numeric(df[c], errors="coerce")
-    for c in INT_COLS:
-        if c in df.columns: df[c] = pd.to_numeric(df[c], errors="coerce").astype("Int64")
-    return df
-
 def _coerce_odds_dtypes(df: pd.DataFrame) -> pd.DataFrame:
     if df is None or df.empty:
         return df

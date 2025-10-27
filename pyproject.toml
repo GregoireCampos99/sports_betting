@@ -1,0 +1,14 @@
+[project]
+name = "sports_betting"
+version = "0.1.0"
+description = "Soccer odds and fixture ingestion pipeline"
+authors = [{name="Grégoire Campos"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "pandas",
+  "duckdb",
+  "requests",
+  "python-dotenv",
+  "pytest"
+]
