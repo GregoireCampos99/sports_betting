@@ -44,8 +44,8 @@ def _coerce_odds_dtypes(df: pd.DataFrame) -> pd.DataFrame:
             df[c] = pd.to_numeric(df[c], errors="coerce").astype("Int64")
     return df
 
-def ingest_odds_snapshot() -> dict:
-    payload = fetch_h2h(sport_key="soccer_germany_bundesliga")
+def ingest_odds_snapshot(sport_key) -> dict:
+    payload = fetch_h2h(sport_key=sport_key)
     odds = build_odds_df_from_theoddsapi(payload, league_key="soccer_germany_bundesliga")
     odds = _coerce_odds_dtypes(odds)
     # sanity

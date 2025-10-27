@@ -38,7 +38,7 @@ You will need an API key for:
 # Done
 
 # In Progress: gathering and processing data: 
-- improve coverage for odds (looks like it is empty on API-football - might need to revert back to TheOdds)
+- improve coverage for odds: the odds only offers current season odds (historical odds: need to pay $30)
 
 # To do 
 - betting engine

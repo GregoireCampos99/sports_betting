@@ -9,9 +9,9 @@ HEADERS = {"x-apisports-key": API_KEY}
 
 # Call the API and get structured JSON
 resp = requests.get(f"{BASE}/leagues", headers=HEADERS, timeout=30)
+# resp = requests.get(f"{BASE}/odds", headers=HEADERS, timeout=30, params={'league':78, 'season':2025})
 resp.raise_for_status()
 j = resp.json()  # dict with keys: get, parameters, errors, results, response(list)
-
 # Top-level “response” is a list of league entries
 data = j.get("response", [])
 
